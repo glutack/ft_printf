@@ -2,27 +2,68 @@
 #include <unistd.h>
 #include "libft.h"
 
-//%s -> un string
-int ft_print_str(char *str)
+//%c 
+//%% -> porcentaje
+unsigned int ft_putchar(char c)
 {
-    int i;
+    write(1, &c, 1)
+    return (1);
+}
+
+//%s -> un string
+unsigned int ft_putstr(char *str)
+{
+    unsigned int    i;
     
     i = 0;
-    while (str[i] != '\0')
+    if (str)
     {
-        write(1, &str[i], 1);
-        i++;
+        write(1, str, ft_strlen(str));
     }
     return (ft_strlen(str));
 }
 
+//%p -> puntero void * en hexadecimal
+
+
+
+//%d -> num decimal ??
+//%i -> int base 10
+unsigned int	ft_putnbr(int nb)
+{
+    unsigned int    len;
+    
+    len = 0;
+	if (nb == -2147483648)
+		write(1, "-2147483648", 11);
+        len = 11;
+	else if (nb < 0)
+	{
+		ft_putchar('-');
+		ft_putnbr(nb *= -1);
+        len++;
+	}
+	else if (nb > 9)
+	{
+		ft_putnbr(nb / 10);
+		ft_putnbr(nb % 10);
+	}
+	else
+		ft_putchar(nb + '0');
+        len++;
+    return (len);
+}
+
+//%u -> num decimal sin signo
+
+
+
 //%x -> num hexadecimal en minúscula
 //%X -> num hexadecimal en mayúscula
-
-int ft_print_hex(int num, int upper)
+int ft_puthex(int num, int upper)
 {
-    char hex[16];
-    int len;
+    char    hex[16];
+    unsigned int    len;
 
     len = 0;
     if (upper)
@@ -30,7 +71,7 @@ int ft_print_hex(int num, int upper)
     else
         hex = '0123456789abcdef';
     if (n > 16)
-        ft_print_hex(n / 16, upper);
+        ft_puthex(n / 16, upper);
         write(1, hex[n % 16], 1);
         len++;
     else if (n < 16)
@@ -39,51 +80,54 @@ int ft_print_hex(int num, int upper)
     return (len);
 }
 
-int ft_printf(char const* arg, ...)
+// hay conversión?
+
+int static ft_isconver(char c, va_list list)
+{
+    unsigned int    len;
+
+    len = 0;
+    if (c == 'c')
+        len = ft_putchar(va_arg(list, int));
+    else if (c == 's')
+        len = ft_putstr(va_arg(list, char *));
+    else if (c = 'p')
+    else if (c = 'd' || c = 'i')
+        len = ft_putnbr(va_arg(list, int));
+    //else if (c = 'i')
+    else if (c = 'u')
+    else if (c == 'x' || arg[i] == 'X')
+    {
+        if (c == 'x')
+            len = ft_putstr("0x");
+        else if (c == 'X')
+            len = ft_putstr("0X");
+        len = ft_puthex(va_arg(list, int), ft_isalpha(arg[i]));
+    }
+    else if (c = '%')
+        len = ft_putchar(va_arg(list, int))
+}
+
+// printf
+int ft_printf(char const *arg, ...)
 {
     va_list list;
+    unsigned int    i;
+    unsigned int    len;
+
     va_start(list, arg);
-
-    int i;
-
-    i = 0;
-    while (arg[i] != '\0')
+    i = -1;
+    len = 0;
+    while (arg[++i])
     {
         if (arg[i] == '%')
-        {
-            i++;
-            if (arg[i] == 's')
-                ft_print_str(va_arg(list, char *));
-            else if (arg[i] == 'x' || arg[i] == 'X')
-                ft_print_hex(va_arg(list, int), ft_isalpha(arg[i]));
-        }
+            len += ft_isconver(str[++i], list)
         else
-        {
-            write(1, &arg[i], 1)
-        } 
-        i++;
+            len += ft_putchar(arg[i]);
     }
     va_end(list);
-    return ()
+    return (len)
 }
-
-//%c -> un solo carácter
-
-
-//%p -> puntero void * en hexadecimal
-
-//%d -> num decimal
-int ft_print_dec(int num)
-{
-
-}
-
-//%i -> int base 10
-
-//%u -> num decimal sin signo
-
-//%% -> porcentaje
-int ft_print_percent()
 
 int main(void)
 {
