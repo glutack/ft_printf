@@ -41,20 +41,14 @@ unsigned int	ft_putchar(char c)
 //%s -> un string
 unsigned int	ft_putstr(char *str)
 {
-	unsigned int	i;
-
-	i = 0;
 	if (!str)
 	{
 		write(1, "(null)", 6);
 		return (6);
 	}
-	while (str[i] != '\0')
-	{
-		write(1, &str[i], 1);
-		i++;
-	}
-	return (i);
+	else
+		write(1, str, ftstrlen(str));
+	return (ft_strlen(str));
 }
 
 //%p -> puntero void * en hexadecimal
@@ -130,10 +124,13 @@ int static	ft_isconver(char c, va_list list)
 		len = ft_putchar(va_arg(list, int));
 	else if (c == 's')
 		len = ft_putstr(va_arg(list, char *));
-	//else if (c = 'p')
+	else if (c = 'p')
+	{
+		len = ft_putstr("0x");
+		len += ft_puthex(va_arg(list. int), ft_isalpha(c));
+	}
 	else if (c == 'd' || c == 'i')
 		len = ft_putnbr(va_arg(list, int));
-	//else if (c = 'i')
 	//else if (c = 'u')
 	else if (c == 'x' || c == 'X')
 	{
