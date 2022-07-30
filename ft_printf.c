@@ -13,13 +13,6 @@
 #include <stdarg.h>
 #include <unistd.h>
 
-int	ft_isalpha(int c)
-{
-	if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))
-		return (1);
-	return (0);
-}
-
 size_t	ft_strlen(const char *s)
 {	
 	unsigned int	len;
@@ -53,30 +46,31 @@ unsigned int	ft_putstr(char *str)
 
 //%d -> num decimal ??
 //%i -> int base 10
-unsigned int	ft_putnbr(int num)
+unsigned int	ft_putnbr(int n)
 {
 	unsigned int	len;
-	long	n;
 
 	len = 0;
-	n = num;	
-	if (n < 0)
+	if (nb == -2147483648)
+	{
+		write(1, "-2147483648", 11);
+		return (11);
+	}
+	else if (n < 0)
 	{
 		ft_putchar('-');
-		ft_putnbr(n *= -1);
+		n = -n;
 		len++;
 	}
-	else if (n > 9)
+	else if (nb < 10)
 	{
-		len += ft_putnbr(n / 10);
-		ft_putchar((n % 10) + '0');
+		ft_putchar(n + '0');
 		len++;
 	}
 	else
 	{
-		
-		 58     unft_putchar(n + '0');
-		len++;
+		len += ft_putnbr(n / 10);
+		len +=ft_putchar(n % 10);
 	}
 	return (len);
 }
@@ -86,62 +80,52 @@ unsigned int	ft_putnbr(int num)
 //%p -> puntero void * en hexadecimal
 //%x -> num hexadecimal en minúscula
 //%X -> num hexadecimal en mayúscula
-int	ft_puthex(int num, int upper)
+unsigned int	ft_puthex(unsigned long long n, const char *type)
 {
-	char			*hex;
-	unsigned int	len;
+	int	len;
 
 	len = 0;
-	if (num == 0)
+	if (num < 16)
 	{
-		write(1, "000000000", 9);
-		return (9);
+		ft_putchar(type[n]);
+		len++;
 	}
-	if (upper == 1)
-		hex = "0123456789ABCDEF";
 	else
-		hex = "0123456789abcdef";
-	if (num > 16)
 	{
-		ft_puthex(num / 16, upper);
-		write(1, &hex[num % 16], 1);
-		len++;
-	}
-	else if (num < 16)
-	{
-		write(1, &hex[num], 1);
-		len++;
+		len += ft_puthex(n / 16, type);
+		len += ft_puthex(n % 16, type);
 	}
 	return (len);
 }
 
 // hay conversión?
 
-int static	ft_isconver(char c, va_list list)
+int static	ft_isconver(char conver, va_list arg_list)
 {
 	unsigned int	len;
 
 	len = 0;
-	if (c == 'c')
-		len = ft_putchar(va_arg(list, int));
-	else if (c == 's')
-		len = ft_putstr(va_arg(list, char *));
-	else if (c == 'p')
+	if (conver == 'c')
+		len = ft_putchar(va_arg(arg_list, int));
+	else if (conver == 's')
+		len = ft_putstr(va_arg(arg_list, char *));
+	/*else if (conver == 'p')
 	{
 		len = ft_putstr("0x");
-		len += ft_puthex(va_arg(list, int), ft_isalpha(c));
-	}
-	else if (c == 'd' || c == 'i')
-		len = ft_putnbr(va_arg(list, int));
-	//else if (c = 'u')
-	else if (c == 'x')
+		len += ft_puthex("123456789abcdefg", va_arg(arg_list, int));
+	}*/
+	else if (conver == 'd' || conver == 'i')
+		len = ft_putnbr(va_arg(arg_list, int));
+	//else if (conver = 'u')
+	else if (conver == 'x' || conver == 'p')
 		len = ft_putstr("0x");
-	else if (c == 'X')
+		len += ft_puthex("0123456789abcdef", va_arg(arg_list, unsigned int))
+	else if (conver == 'X')
 	{
 		len = ft_putstr("0X");
-		len += ft_puthex(va_arg(list, int), ft_isalpha(c));
+		len += ft_puthex("0123456789ABCDEF", va_arg(arg_list, unsigned int));
 	}
-	else if (c == '%')
+	else if (conver == '%')
 		len = ft_putchar('%');
 	return (len);
 }
@@ -149,17 +133,17 @@ int static	ft_isconver(char c, va_list list)
 // printf
 int	ft_printf(char const *arg, ...)
 {
-	va_list			list;
+	va_list			arg_list;
 	unsigned int	i;
 	unsigned int	len;
 
-	va_start(list, arg);
+	va_start(arg_list, arg);
 	i = -1;
 	len = 0;
 	while (arg[++i])
 	{
 		if (arg[i] == '%')
-			len += ft_isconver(arg[++i], list);
+			len += ft_isconver(arg[++i], arg_list);
 		else
 			len += ft_putchar(arg[i]);
 	}
