@@ -46,13 +46,7 @@ unsigned int	ft_putnbru(unsigned long n)
 	unsigned int	len;
 
 	len = 0;
-	if (n < 0)
-	{
-		ft_putchar('-');
-		n *= -1;
-		len++;
-	}
-	else if (n <= 9)
+	if (n <= 9)
 	{
 		ft_putchar(n + '0');
 		len++;

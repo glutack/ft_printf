@@ -21,22 +21,22 @@ all: $(NAME)
 
 %.o: %.c
 	@${CC} ${CFLAGS} -c $< -o $@
-	@echo "Objetos creados"
+	@echo "ft_printf -> objetos creados"
 
 $(NAME): ${OBJS} 
 	@${CC} -c ${CFLAGS} ${SRCS}
 	@ar crs ${NAME} ${OBJS}
-	@echo "Librería creada"
+	@echo "ft_printf -> creado"
 
 clean: 
 	@${RM} ${OBJS}
-	@echo "Objetos eliminados"
+	@echo "ft_printf -> objetos eliminados"
 
 fclean: clean
 	@${RM} ${NAME}
-	@echo "Librería eliminada"
+	@echo "ft_printf -> eliminado"
 
 re: fclean all
-	@echo ":D"
+	@echo "ft_printf :D"
 
 .PHONY: all clean fclean re

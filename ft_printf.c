@@ -12,7 +12,7 @@
 #include "ft_printf.h"
 
 // hay conversión?
-int static	ft_isconver(char conver, va_list arg_list)
+static int	ft_isconver(char conver, va_list arg_list)
 {
 	unsigned int	len;
 
